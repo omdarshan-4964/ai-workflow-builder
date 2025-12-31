@@ -22,6 +22,7 @@ interface LLMNodeData {
   response?: string;
   isRunning?: boolean;
   onChange?: (nodeId: string, newData: Record<string, unknown>) => void;
+  onRun?: (nodeId: string) => void;
 }
 
 export default function LLMNode({ data, selected, id }: NodeProps<LLMNodeData>) {
@@ -39,18 +40,25 @@ export default function LLMNode({ data, selected, id }: NodeProps<LLMNodeData>) 
   );
 
   const handleRunWorkflow = useCallback(async () => {
+    if (!data.onRun) {
+      console.error('onRun function not provided');
+      return;
+    }
+
     setIsRunning(true);
     
-    // Simulate API call
+    // Update node state to show running
+    if (data.onChange) {
+      data.onChange(id, { isRunning: true });
+    }
+
+    // Call the graph execution engine
+    data.onRun(id);
+    
+    // Reset running state after a short delay
     setTimeout(() => {
       setIsRunning(false);
-      if (data.onChange) {
-        data.onChange(id, {
-          response: 'LLM response will appear here...',
-          isRunning: false,
-        });
-      }
-    }, 2000);
+    }, 500);
   }, [data, id]);
 
   return (
