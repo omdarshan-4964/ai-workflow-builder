@@ -66,6 +66,27 @@ function EditorCanvas() {
     [setNodes]
   );
 
+  // Helper: Convert Blob URL to Base64
+  const blobToBase64 = async (blobUrl: string): Promise<string> => {
+    try {
+      const response = await fetch(blobUrl);
+      const blob = await response.blob();
+      
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64 = reader.result as string;
+          resolve(base64);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    } catch (error) {
+      console.error('Error converting blob to base64:', error);
+      throw error;
+    }
+  };
+
   // Graph Execution Engine - Run a specific node
   const runNode = useCallback(
     (targetNodeId: string) => {
@@ -118,7 +139,7 @@ function EditorCanvas() {
 
       console.log('📦 Executing with payload:', payload);
 
-      // Show toast notification with the data
+      // Validate inputs
       const payloadSummary = [];
       if (payload.system) payloadSummary.push(`System: "${payload.system.substring(0, 30)}..."`);
       if (payload.user) payloadSummary.push(`User: "${payload.user.substring(0, 30)}..."`);
@@ -128,19 +149,86 @@ function EditorCanvas() {
         toast.warning('No inputs connected to LLM node', {
           description: 'Connect Text or Image nodes to the LLM inputs',
         });
-      } else {
-        toast.success('Workflow Executed!', {
-          description: payloadSummary.join(' | '),
-        });
+        return;
       }
 
-      // Update the target node with execution status
+      // Set loading state
       handleNodeDataChange(targetNodeId, {
-        isRunning: false,
-        response: `Received:\n${JSON.stringify(payload, null, 2)}`,
+        isRunning: true,
+        response: 'Generating response...',
       });
+
+      // Execute API call asynchronously
+      (async () => {
+        try {
+          // Convert blob URLs to base64 if images exist
+          const base64Images: string[] = [];
+          if (payload.images.length > 0) {
+            toast.info('Processing images...', { duration: 2000 });
+            for (const imageUrl of payload.images) {
+              if (imageUrl.startsWith('blob:')) {
+                const base64 = await blobToBase64(imageUrl);
+                base64Images.push(base64);
+              } else {
+                base64Images.push(imageUrl);
+              }
+            }
+          }
+
+          // Get model from target node data
+          const model = targetNode.data.model || 'gemini-1.5-flash';
+
+          // Call Gemini API
+          toast.info('Calling Gemini API...', { duration: 2000 });
+          const response = await fetch('/api/llm', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              system: payload.system,
+              user: payload.user,
+              images: base64Images,
+              model,
+            }),
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'API request failed');
+          }
+
+          const data = await response.json();
+          
+          // Update node with response
+          handleNodeDataChange(targetNodeId, {
+            isRunning: false,
+            response: data.response,
+          });
+
+          // Show success toast
+          toast.success('Workflow Executed!', {
+            description: `Generated ${data.response.length} characters`,
+          });
+
+          console.log('✅ Gemini Response:', data.response);
+        } catch (error: any) {
+          console.error('❌ Execution error:', error);
+          
+          // Update node with error
+          handleNodeDataChange(targetNodeId, {
+            isRunning: false,
+            response: `Error: ${error.message}`,
+          });
+
+          // Show error toast
+          toast.error('Execution Failed', {
+            description: error.message || 'Unknown error occurred',
+          });
+        }
+      })();
     },
-    [getNodes, getEdges, handleNodeDataChange]
+    [getNodes, getEdges, handleNodeDataChange, blobToBase64]
   );
 
   const onConnect: OnConnect = useCallback(
