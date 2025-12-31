@@ -1,22 +1,31 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --weavy-primary: #7c3aed;
+  --weavy-background: #f8fafc;
+  --weavy-grid: #e2e8f0;
+  --weavy-dark-bg: #0a0a0a;
+  --weavy-card: #1a1a1a;
+  --weavy-border: #2a2a2a;
+  --weavy-purple-light: #8b5cf6;
+  --weavy-purple-dark: #6d28d9;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-weavy-primary: var(--weavy-primary);
+  --color-weavy-background: var(--weavy-background);
+  --color-weavy-grid: var(--weavy-grid);
+  --color-weavy-dark-bg: var(--weavy-dark-bg);
+  --color-weavy-card: var(--weavy-card);
+  --color-weavy-border: var(--weavy-border);
+  --color-weavy-purple-light: var(--weavy-purple-light);
+  --color-weavy-purple-dark: var(--weavy-purple-dark);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
