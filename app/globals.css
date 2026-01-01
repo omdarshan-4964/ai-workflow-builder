@@ -43,3 +43,24 @@ body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;  /* Chrome, Safari and Opera */
 }
+
+/* React Flow Dark Mode Overrides */
+.react-flow__controls {
+  background-color: #171717 !important; /* neutral-900 */
+  border: 1px solid #262626 !important; /* neutral-800 */
+  box-shadow: none !important;
+}
+
+.react-flow__controls-button {
+  background-color: #171717 !important;
+  border-bottom: 1px solid #262626 !important;
+  fill: #e5e5e5 !important; /* Icon color */
+}
+
+.react-flow__controls-button:hover {
+  background-color: #262626 !important;
+}
+
+.react-flow__controls-button svg {
+  fill: #e5e5e5 !important;
+}
