@@ -1,17 +1,18 @@
 'use client';
 
 import { useCallback, useEffect, useRef } from 'react';
-import { Handle, Position, NodeProps } from '@xyflow/react';
+import { Handle, Position, NodeProps, Node } from '@xyflow/react';
 import { Type } from 'lucide-react';
 import BaseNode from './BaseNode';
 import { Textarea } from '@/components/ui/textarea';
 
-interface TextNodeData {
+interface TextNodeData extends Record<string, unknown> {
   label?: string;
   text?: string;
+  onChange?: (nodeId: string, newData: Record<string, unknown>) => void;
 }
 
-export default function TextNode({ data, selected, id }: NodeProps<TextNodeData>) {
+export default function TextNode({ data, selected, id }: NodeProps<Node<TextNodeData>>) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Auto-resize textarea

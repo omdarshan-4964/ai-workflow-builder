@@ -19,12 +19,12 @@ const WorkflowSchema = new Schema<IWorkflow>(
       maxlength: [100, 'Workflow name cannot exceed 100 characters'],
     },
     nodes: {
-      type: [Schema.Types.Mixed],
+      type: Schema.Types.Mixed,
       required: [true, 'Nodes array is required'],
       default: [],
     },
     edges: {
-      type: [Schema.Types.Mixed],
+      type: Schema.Types.Mixed,
       required: [true, 'Edges array is required'],
       default: [],
     },

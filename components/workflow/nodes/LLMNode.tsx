@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { Handle, Position, NodeProps } from '@xyflow/react';
+import { Handle, Position, NodeProps, Node } from '@xyflow/react';
 import { Sparkles, Play } from 'lucide-react';
 import BaseNode from './BaseNode';
 import { Button } from '@/components/ui/button';
@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-interface LLMNodeData {
+interface LLMNodeData extends Record<string, unknown> {
   label?: string;
   model?: string;
   systemPrompt?: string;
@@ -25,7 +25,7 @@ interface LLMNodeData {
   onRun?: (nodeId: string) => void;
 }
 
-export default function LLMNode({ data, selected, id }: NodeProps<LLMNodeData>) {
+export default function LLMNode({ data, selected, id }: NodeProps<Node<LLMNodeData>>) {
   const [model, setModel] = useState(data.model || 'gemini-1.5-flash');
   const [isRunning, setIsRunning] = useState(false);
 

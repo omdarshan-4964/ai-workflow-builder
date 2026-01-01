@@ -1,18 +1,18 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import { Handle, Position, NodeProps } from '@xyflow/react';
+import { Handle, Position, NodeProps, Node } from '@xyflow/react';
 import { Image as ImageIcon, Upload } from 'lucide-react';
 import BaseNode from './BaseNode';
 
-interface ImageNodeData {
+interface ImageNodeData extends Record<string, unknown> {
   label?: string;
   imageUrl?: string;
   imageName?: string;
   onChange?: (nodeId: string, newData: Record<string, unknown>) => void;
 }
 
-export default function ImageNode({ data, selected, id }: NodeProps<ImageNodeData>) {
+export default function ImageNode({ data, selected, id }: NodeProps<Node<ImageNodeData>>) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(data.imageUrl || null);
   const [isUploading, setIsUploading] = useState(false);
 
