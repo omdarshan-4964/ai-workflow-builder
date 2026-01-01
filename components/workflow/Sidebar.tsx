@@ -165,11 +165,11 @@ export default function Sidebar({ onLoadTemplate, onLoadWorkflow }: SidebarProps
           </>
         )}
 
-        {/* Core Nodes Section */}
+        {/* Quick Access Section */}
         <div className="space-y-3">
           <div className="px-2">
             <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Core Nodes
+              Quick Access
             </h3>
           </div>
           <div className="space-y-2">
@@ -183,19 +183,6 @@ export default function Sidebar({ onLoadTemplate, onLoadWorkflow }: SidebarProps
               label="Image Node"
               nodeType="image"
             />
-          </div>
-        </div>
-
-        <Separator className="bg-neutral-800" />
-
-        {/* AI Models Section */}
-        <div className="space-y-3">
-          <div className="px-2">
-            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              AI Models
-            </h3>
-          </div>
-          <div className="space-y-2">
             <NodeButton
               icon={<Sparkles size={18} />}
               label="Run Any LLM"

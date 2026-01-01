@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState, useMemo, useEffect, Suspense } from 'react';
+import { useCallback, useState, useMemo, useEffect, Suspense, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { 
   ReactFlow,
@@ -17,9 +17,12 @@ import {
   useEdgesState, 
   useReactFlow,
   OnConnect,
+  NodeChange,
+  EdgeChange,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { toast } from 'sonner';
+import { RotateCcw, RotateCw } from 'lucide-react';
 
 import Sidebar from '@/components/workflow/Sidebar';
 import Header, { ExportWorkflowData } from '@/components/workflow/Header';
@@ -44,6 +47,108 @@ function EditorCanvas() {
   
   // Get live node and edge data from React Flow
   const { getNodes, getEdges, fitView } = useReactFlow();
+
+  // Undo/Redo History State
+  const [past, setPast] = useState<Array<{ nodes: Node[]; edges: Edge[] }>>([]);
+  const [future, setFuture] = useState<Array<{ nodes: Node[]; edges: Edge[] }>>([]);
+  const skipSnapshotRef = useRef(false);
+
+  // Take a snapshot of current state
+  const takeSnapshot = useCallback(() => {
+    if (skipSnapshotRef.current) {
+      skipSnapshotRef.current = false;
+      return;
+    }
+
+    const currentNodes = getNodes();
+    const currentEdges = getEdges();
+    
+    setPast((prev) => [...prev, { nodes: currentNodes, edges: currentEdges }]);
+    setFuture([]); // Clear future when new action is taken
+  }, [getNodes, getEdges]);
+
+  // Undo function
+  const undo = useCallback(() => {
+    if (past.length === 0) return;
+
+    const currentNodes = getNodes();
+    const currentEdges = getEdges();
+    
+    const previous = past[past.length - 1];
+    setPast((prev) => prev.slice(0, -1));
+    setFuture((prev) => [{ nodes: currentNodes, edges: currentEdges }, ...prev]);
+    
+    skipSnapshotRef.current = true;
+    setNodes(previous.nodes);
+    setEdges(previous.edges);
+  }, [past, getNodes, getEdges, setNodes, setEdges]);
+
+  // Redo function
+  const redo = useCallback(() => {
+    if (future.length === 0) return;
+
+    const currentNodes = getNodes();
+    const currentEdges = getEdges();
+    
+    const next = future[0];
+    setFuture((prev) => prev.slice(1));
+    setPast((prev) => [...prev, { nodes: currentNodes, edges: currentEdges }]);
+    
+    skipSnapshotRef.current = true;
+    setNodes(next.nodes);
+    setEdges(next.edges);
+  }, [future, getNodes, getEdges, setNodes, setEdges]);
+
+  const canUndo = past.length > 0;
+  const canRedo = future.length > 0;
+
+  // Wrapped onChange handlers that take snapshots
+  const handleNodesChange = useCallback(
+    (changes: NodeChange[]) => {
+      // Check if this is a user-initiated change (not from undo/redo)
+      const isUserChange = changes.some(
+        (change) => change.type === 'position' || change.type === 'remove' || change.type === 'add' || change.type === 'dimensions'
+      );
+      
+      if (isUserChange && !skipSnapshotRef.current) {
+        takeSnapshot();
+      }
+      
+      onNodesChange(changes);
+    },
+    [onNodesChange, takeSnapshot]
+  );
+
+  const handleEdgesChange = useCallback(
+    (changes: EdgeChange[]) => {
+      const isUserChange = changes.some(
+        (change) => change.type === 'remove' || change.type === 'add' || change.type === 'select'
+      );
+      
+      if (isUserChange && !skipSnapshotRef.current) {
+        takeSnapshot();
+      }
+      
+      onEdgesChange(changes);
+    },
+    [onEdgesChange, takeSnapshot]
+  );
+
+  // Keyboard shortcuts for undo/redo
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        undo();
+      } else if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
+        e.preventDefault();
+        redo();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [undo, redo]);
 
   // Register custom node types
   const nodeTypes = useMemo(
@@ -283,9 +388,10 @@ function EditorCanvas() {
         },
       };
 
+      takeSnapshot();
       setNodes((nds) => nds.concat(newNode));
     },
-    [setNodes, handleNodeDataChange, runNode]
+    [setNodes, handleNodeDataChange, runNode, takeSnapshot]
   );
 
   // Load a pre-built workflow template
@@ -548,10 +654,11 @@ function EditorCanvas() {
           <ReactFlow
             nodes={nodes}
             edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
+            onNodesChange={handleNodesChange}
+            onEdgesChange={handleEdgesChange}
             onConnect={onConnect}
             nodeTypes={nodeTypes as any}
+            deleteKeyCode={['Backspace', 'Delete']}
             fitView
             attributionPosition="bottom-left"
           >
@@ -565,6 +672,25 @@ function EditorCanvas() {
               className="bg-neutral-800 border-neutral-700 shadow-lg [&>button]:bg-neutral-800 [&>button]:border-neutral-700 [&>button]:text-gray-200 hover:[&>button]:bg-neutral-700 [&>button>svg]:stroke-gray-200"
               showInteractive={false}
             />
+            {/* Undo/Redo Buttons */}
+            <div className="absolute bottom-2 left-2 flex flex-col gap-1 bg-neutral-800 border border-neutral-700 rounded-lg shadow-lg">
+              <button
+                onClick={undo}
+                disabled={!canUndo}
+                className="bg-neutral-800 border-b border-neutral-700 text-gray-200 hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed p-2 flex items-center justify-center transition-colors"
+                title="Undo (Ctrl+Z)"
+              >
+                <RotateCcw size={16} className="stroke-gray-200" />
+              </button>
+              <button
+                onClick={redo}
+                disabled={!canRedo}
+                className="bg-neutral-800 text-gray-200 hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed p-2 flex items-center justify-center transition-colors"
+                title="Redo (Ctrl+Y)"
+              >
+                <RotateCw size={16} className="stroke-gray-200" />
+              </button>
+            </div>
             <MiniMap
               className="border border-neutral-800 rounded-lg"
               nodeColor="#555"

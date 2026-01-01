@@ -24,8 +24,6 @@
   --color-weavy-border: var(--weavy-border);
   --color-weavy-purple-light: var(--weavy-purple-light);
   --color-weavy-purple-dark: var(--weavy-purple-dark);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 body {

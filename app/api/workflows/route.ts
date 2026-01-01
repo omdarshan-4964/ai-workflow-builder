@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import connectDB from '@/lib/db';
 import Workflow from '@/models/Workflow';
+
+// Zod schema for workflow validation
+const WorkflowSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  nodes: z.array(z.any()),
+  edges: z.array(z.any()),
+}).passthrough();
 
 /**
  * GET /api/workflows
@@ -44,38 +52,22 @@ export async function POST(request: NextRequest) {
   try {
     // Parse request body
     const body = await request.json();
-    const { name, nodes, edges } = body;
 
-    // Validate required fields
-    if (!name || !name.trim()) {
+    // Validate with Zod schema
+    const result = WorkflowSchema.safeParse(body);
+
+    if (!result.success) {
       return NextResponse.json(
         {
           success: false,
-          error: 'Workflow name is required',
+          error: 'Validation failed',
+          details: result.error.format(),
         },
         { status: 400 }
       );
     }
 
-    if (!nodes || !Array.isArray(nodes)) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Nodes array is required',
-        },
-        { status: 400 }
-      );
-    }
-
-    if (!edges || !Array.isArray(edges)) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Edges array is required',
-        },
-        { status: 400 }
-      );
-    }
+    const { name, nodes, edges } = result.data;
 
     // Connect to database
     await connectDB();
