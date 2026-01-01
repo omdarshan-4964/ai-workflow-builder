@@ -66,21 +66,21 @@ export default function LLMNode({ data, selected, id }: NodeProps<Node<LLMNodeDa
       <div className="space-y-4">
         {/* Model Selector */}
         <div className="space-y-2">
-          <label className="text-xs font-medium text-gray-600">AI Model</label>
+          <label className="text-xs font-medium text-gray-300">AI Model</label>
           <Select value={model} onValueChange={handleModelChange}>
-            <SelectTrigger className="w-full bg-white nodrag">
+            <SelectTrigger className="w-full bg-neutral-950 border-neutral-800 text-white nodrag">
               <SelectValue placeholder="Select a model" />
             </SelectTrigger>
-            <SelectContent className="bg-white">
-              <SelectItem value="gemini-1.5-flash">Gemini 1.5 Flash</SelectItem>
-              <SelectItem value="gemini-1.5-pro">Gemini 1.5 Pro</SelectItem>
+            <SelectContent className="bg-neutral-900 border-neutral-800">
+              <SelectItem value="gemini-1.5-flash" className="text-white focus:bg-neutral-800">Gemini 1.5 Flash</SelectItem>
+              <SelectItem value="gemini-1.5-pro" className="text-white focus:bg-neutral-800">Gemini 1.5 Pro</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         {/* Inputs Section */}
         <div className="space-y-3">
-          <div className="text-xs font-medium text-gray-600 mb-2">Inputs</div>
+          <div className="text-xs font-medium text-gray-300 mb-2">Inputs</div>
           
           {/* System Prompt Input */}
           <div className="flex items-center gap-2 relative">
@@ -88,11 +88,11 @@ export default function LLMNode({ data, selected, id }: NodeProps<Node<LLMNodeDa
               type="target"
               position={Position.Left}
               id="system"
-              className="w-3 h-3 bg-blue-500 border-2 border-white"
+              className="w-3 h-3 bg-blue-500 border-2 border-neutral-900"
               style={{ left: -6 }}
             />
-            <div className="flex-1 bg-white border border-gray-200 rounded-md px-3 py-2">
-              <span className="text-xs text-gray-500">System Prompt</span>
+            <div className="flex-1 bg-neutral-950 border border-neutral-800 rounded-md px-3 py-2">
+              <span className="text-xs text-gray-400">System Prompt</span>
             </div>
           </div>
 
@@ -102,11 +102,11 @@ export default function LLMNode({ data, selected, id }: NodeProps<Node<LLMNodeDa
               type="target"
               position={Position.Left}
               id="user"
-              className="w-3 h-3 bg-green-500 border-2 border-white"
+              className="w-3 h-3 bg-green-500 border-2 border-neutral-900"
               style={{ left: -6 }}
             />
-            <div className="flex-1 bg-white border border-gray-200 rounded-md px-3 py-2">
-              <span className="text-xs text-gray-500">User Message</span>
+            <div className="flex-1 bg-neutral-950 border border-neutral-800 rounded-md px-3 py-2">
+              <span className="text-xs text-gray-400">User Message</span>
             </div>
           </div>
 
@@ -116,11 +116,11 @@ export default function LLMNode({ data, selected, id }: NodeProps<Node<LLMNodeDa
               type="target"
               position={Position.Left}
               id="images"
-              className="w-3 h-3 bg-purple-500 border-2 border-white"
+              className="w-3 h-3 bg-purple-500 border-2 border-neutral-900"
               style={{ left: -6 }}
             />
-            <div className="flex-1 bg-white border border-gray-200 rounded-md px-3 py-2">
-              <span className="text-xs text-gray-500">Images (optional)</span>
+            <div className="flex-1 bg-neutral-950 border border-neutral-800 rounded-md px-3 py-2">
+              <span className="text-xs text-gray-400">Images (optional)</span>
             </div>
           </div>
         </div>
@@ -137,9 +137,9 @@ export default function LLMNode({ data, selected, id }: NodeProps<Node<LLMNodeDa
 
         {/* Response Preview */}
         {data.response && (
-          <div className="mt-3 p-3 bg-gray-50 rounded-md border border-gray-200">
-            <div className="text-xs font-medium text-gray-600 mb-1">Response</div>
-            <div className="text-xs text-gray-700 line-clamp-3">{data.response}</div>
+          <div className="mt-3 p-3 bg-neutral-950 rounded-md border border-neutral-800">
+            <div className="text-xs font-medium text-gray-300 mb-1">Response</div>
+            <div className="text-xs text-gray-200 line-clamp-3">{data.response}</div>
           </div>
         )}
       </div>
@@ -149,7 +149,7 @@ export default function LLMNode({ data, selected, id }: NodeProps<Node<LLMNodeDa
         type="source"
         position={Position.Right}
         id="response"
-        className="w-3 h-3 bg-weavy-primary border-2 border-white"
+        className="w-3 h-3 bg-weavy-primary border-2 border-neutral-900"
         style={{ right: -6 }}
       />
     </BaseNode>

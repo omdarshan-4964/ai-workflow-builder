@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Rocket, Loader2, Download, Upload } from 'lucide-react';
+import { Rocket, Loader2, Download, Upload, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 
 export interface ExportWorkflowData {
@@ -27,6 +28,7 @@ export default function Header({
   onExport,
   onImport,
 }: HeaderProps) {
+  const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -84,13 +86,22 @@ export default function Header({
   };
 
   return (
-    <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-6 py-4 bg-white/80 backdrop-blur-sm border-b border-gray-200">
+    <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-6 py-4 bg-neutral-900/95 backdrop-blur-sm border-b border-neutral-800">
       <div className="flex items-center gap-4">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => router.push('/')}
+          className="text-gray-400 hover:text-white hover:bg-neutral-800"
+        >
+          <ArrowLeft size={16} className="mr-2" />
+          Back to Dashboard
+        </Button>
         <input
           type="text"
           value={workflowName}
           onChange={(e) => onWorkflowNameChange(e.target.value)}
-          className="text-xl font-semibold bg-transparent border-none outline-none focus:ring-0 text-foreground"
+          className="text-xl font-semibold bg-transparent border-none outline-none focus:ring-0 text-gray-200 placeholder:text-gray-500"
           placeholder="Untitled Workflow"
         />
       </div>
@@ -100,9 +111,9 @@ export default function Header({
           <Button
             size="sm"
             onClick={handleExport}
-            className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 shadow-sm"
+            className="bg-neutral-800 border border-neutral-700 text-white hover:bg-neutral-700 shadow-sm"
           >
-            <Download size={16} className="mr-2 text-gray-500" />
+            <Download size={16} className="mr-2" />
             ⬇️ Export
           </Button>
         )}
@@ -113,9 +124,9 @@ export default function Header({
             <Button
               size="sm"
               onClick={handleImport}
-              className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 shadow-sm"
+              className="bg-neutral-800 border border-neutral-700 text-white hover:bg-neutral-700 shadow-sm"
             >
-              <Upload size={16} className="mr-2 text-gray-500" />
+              <Upload size={16} className="mr-2" />
               ⬆️ Import
             </Button>
             <input
@@ -134,6 +145,7 @@ export default function Header({
           size="sm"
           onClick={handleSave}
           disabled={isSaving || !onSave}
+          className="bg-neutral-800 border-neutral-700 text-white hover:bg-neutral-700"
         >
           {isSaving ? (
             <>
@@ -146,7 +158,7 @@ export default function Header({
         </Button>
 
         {/* Deploy Button */}
-        <Button size="sm" className="bg-weavy-primary hover:bg-weavy-purple-dark">
+        <Button size="sm" className="bg-weavy-primary hover:bg-weavy-purple-dark text-white">
           <Rocket size={16} className="mr-2" />
           Deploy
         </Button>

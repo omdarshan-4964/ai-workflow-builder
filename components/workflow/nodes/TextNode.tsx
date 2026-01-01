@@ -40,13 +40,13 @@ export default function TextNode({ data, selected, id }: NodeProps<Node<TextNode
   return (
     <BaseNode title="Text Node" icon={Type} selected={selected}>
       <div className="space-y-2">
-        <label className="text-xs font-medium text-gray-600">Text Content</label>
+        <label className="text-xs font-medium text-gray-300">Text Content</label>
         <Textarea
           ref={textareaRef}
           value={data.text || ''}
           onChange={handleTextChange}
           placeholder="Enter text content..."
-          className="nodrag min-h-[80px] resize-none"
+          className="nodrag min-h-[80px] resize-none bg-neutral-950 text-white border-neutral-800 placeholder:text-gray-500 focus:border-neutral-700"
           rows={3}
         />
         <div className="flex justify-between items-center">
@@ -61,7 +61,7 @@ export default function TextNode({ data, selected, id }: NodeProps<Node<TextNode
         type="source"
         position={Position.Right}
         id="output"
-        className="w-3 h-3 bg-weavy-primary border-2 border-white"
+        className="w-3 h-3 bg-weavy-primary border-2 border-neutral-900"
         style={{ right: -6 }}
       />
     </BaseNode>

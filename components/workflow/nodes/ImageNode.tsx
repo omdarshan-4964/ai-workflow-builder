@@ -77,14 +77,14 @@ export default function ImageNode({ data, selected, id }: NodeProps<Node<ImageNo
           // Upload Box
           <label
             htmlFor={`file-upload-${id}`}
-            className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 hover:bg-gray-100 cursor-pointer transition-colors"
+            className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-neutral-700 rounded-lg bg-neutral-950 hover:bg-neutral-900 cursor-pointer transition-colors"
           >
             <div className="flex flex-col items-center justify-center pt-5 pb-6">
               <Upload className="w-8 h-8 mb-2 text-gray-400" />
-              <p className="text-xs text-gray-500 font-medium">
+              <p className="text-xs text-gray-300 font-medium">
                 {isUploading ? 'Uploading...' : 'Click to upload image'}
               </p>
-              <p className="text-xs text-gray-400 mt-1">PNG, JPG, GIF (max 5MB)</p>
+              <p className="text-xs text-gray-500 mt-1">PNG, JPG, GIF (max 5MB)</p>
             </div>
             <input
               id={`file-upload-${id}`}
@@ -98,7 +98,7 @@ export default function ImageNode({ data, selected, id }: NodeProps<Node<ImageNo
         ) : (
           // Image Preview
           <div className="space-y-2">
-            <div className="relative w-full h-32 rounded-lg overflow-hidden bg-gray-100">
+            <div className="relative w-full h-32 rounded-lg overflow-hidden bg-neutral-950 border border-neutral-800">
               <img
                 src={previewUrl}
                 alt="Preview"
@@ -106,12 +106,12 @@ export default function ImageNode({ data, selected, id }: NodeProps<Node<ImageNo
               />
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-xs text-gray-500 truncate max-w-[180px]">
+              <span className="text-xs text-gray-400 truncate max-w-[180px]">
                 {data.imageName || 'image.jpg'}
               </span>
               <button
                 onClick={handleRemoveImage}
-                className="text-xs text-red-500 hover:text-red-700 font-medium"
+                className="text-xs text-red-400 hover:text-red-300 font-medium"
               >
                 Remove
               </button>
@@ -125,7 +125,7 @@ export default function ImageNode({ data, selected, id }: NodeProps<Node<ImageNo
         type="source"
         position={Position.Right}
         id="output"
-        className="w-3 h-3 bg-weavy-primary border-2 border-white"
+        className="w-3 h-3 bg-weavy-primary border-2 border-neutral-900"
         style={{ right: -6 }}
       />
     </BaseNode>

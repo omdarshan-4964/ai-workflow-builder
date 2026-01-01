@@ -15,16 +15,16 @@ export default function BaseNode({ title, icon: Icon, children, selected = false
   return (
     <div
       className={cn(
-        'bg-white rounded-xl border-2 shadow-lg min-w-[280px] transition-all duration-200',
-        selected ? 'border-weavy-primary shadow-xl' : 'border-gray-200'
+        'bg-neutral-900 rounded-xl border-2 shadow-lg min-w-[280px] transition-all duration-200',
+        selected ? 'border-purple-500 shadow-xl' : 'border-neutral-700'
       )}
     >
       {/* Header */}
-      <div className="bg-purple-50 px-4 py-3 rounded-t-xl border-b border-purple-100 flex items-center gap-2">
-        <div className="flex items-center justify-center w-5 h-5 text-weavy-primary">
+      <div className="bg-purple-600/20 px-4 py-3 rounded-t-xl border-b border-purple-500/30 flex items-center gap-2">
+        <div className="flex items-center justify-center w-5 h-5 text-purple-400">
           <Icon size={18} />
         </div>
-        <h3 className="text-sm font-semibold text-gray-800">{title}</h3>
+        <h3 className="text-sm font-semibold text-gray-100">{title}</h3>
       </div>
 
       {/* Content */}

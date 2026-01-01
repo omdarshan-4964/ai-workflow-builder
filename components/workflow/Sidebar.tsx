@@ -36,7 +36,7 @@ const NodeButton = ({ icon, label, nodeType }: NodeButtonProps) => {
   return (
     <Button
       variant="outline"
-      className="w-full justify-start gap-3 h-12 bg-white hover:bg-weavy-background border-weavy-border text-foreground font-normal"
+      className="w-full justify-start gap-3 h-12 bg-neutral-800 hover:bg-neutral-700 border-neutral-700 text-gray-200 font-normal"
       draggable
       onDragStart={onDragStart}
     >
@@ -79,15 +79,15 @@ export default function Sidebar({ onLoadTemplate, onLoadWorkflow }: SidebarProps
   }, [onLoadWorkflow]);
 
   return (
-    <aside className="w-[280px] h-screen bg-white border-r border-gray-200 flex flex-col">
+    <aside className="w-[280px] h-screen bg-neutral-900 border-r border-neutral-800 flex flex-col">
       {/* Sidebar Header */}
-      <div className="p-6 border-b border-gray-200">
-        <h2 className="text-lg font-semibold text-foreground">Workflow Builder</h2>
+      <div className="p-6 border-b border-neutral-800">
+        <h2 className="text-lg font-semibold text-gray-200">Workflow Builder</h2>
         <p className="text-xs text-gray-500 mt-1">Drag nodes to canvas</p>
       </div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-6">
+      <div className="flex-1 overflow-y-auto scrollbar-hide p-4 space-y-6">
         {/* Templates Section */}
         {onLoadTemplate && (
           <>
@@ -100,7 +100,7 @@ export default function Sidebar({ onLoadTemplate, onLoadWorkflow }: SidebarProps
               <div className="space-y-2">
                 <Button
                   variant="outline"
-                  className="w-full justify-start gap-3 h-12 bg-gradient-to-r from-purple-50 to-blue-50 hover:from-purple-100 hover:to-blue-100 border-weavy-primary text-foreground font-normal"
+                  className="w-full justify-start gap-3 h-12 bg-gradient-to-r from-purple-600/20 to-blue-600/20 hover:from-purple-600/30 hover:to-blue-600/30 border-purple-500/50 text-gray-200 font-normal"
                   onClick={() => {
                     // Import the template dynamically to avoid circular dependencies
                     import('@/lib/templates').then(({ PRODUCT_LISTING_TEMPLATE }) => {
@@ -108,7 +108,7 @@ export default function Sidebar({ onLoadTemplate, onLoadWorkflow }: SidebarProps
                     });
                   }}
                 >
-                  <div className="flex items-center justify-center w-5 h-5 text-weavy-primary">
+                  <div className="flex items-center justify-center w-5 h-5 text-purple-400">
                     <Package size={18} />
                   </div>
                   <span className="text-sm">📦 Product Generator</span>
@@ -116,7 +116,7 @@ export default function Sidebar({ onLoadTemplate, onLoadWorkflow }: SidebarProps
               </div>
             </div>
 
-            <Separator className="bg-gray-200" />
+            <Separator className="bg-neutral-800" />
           </>
         )}
 
@@ -143,7 +143,7 @@ export default function Sidebar({ onLoadTemplate, onLoadWorkflow }: SidebarProps
                     <Button
                       key={workflow._id}
                       variant="outline"
-                      className="w-full justify-start gap-3 h-auto py-3 bg-white hover:bg-weavy-background border-weavy-border text-foreground font-normal"
+                      className="w-full justify-start gap-3 h-auto py-3 bg-neutral-900 hover:bg-neutral-800 border-neutral-700 text-gray-300 font-normal"
                       onClick={() => onLoadWorkflow(workflow)}
                     >
                       <div className="flex items-center justify-center w-5 h-5 text-weavy-primary flex-shrink-0">
@@ -161,7 +161,7 @@ export default function Sidebar({ onLoadTemplate, onLoadWorkflow }: SidebarProps
               </div>
             </div>
 
-            <Separator className="bg-gray-200" />
+            <Separator className="bg-neutral-800" />
           </>
         )}
 
@@ -186,7 +186,7 @@ export default function Sidebar({ onLoadTemplate, onLoadWorkflow }: SidebarProps
           </div>
         </div>
 
-        <Separator className="bg-gray-200" />
+        <Separator className="bg-neutral-800" />
 
         {/* AI Models Section */}
         <div className="space-y-3">
@@ -205,9 +205,9 @@ export default function Sidebar({ onLoadTemplate, onLoadWorkflow }: SidebarProps
         </div>
 
         {/* Quick Tips Card */}
-        <Card className="p-4 bg-weavy-background border-weavy-border">
-          <h4 className="text-xs font-semibold text-foreground mb-2">Quick Tips</h4>
-          <ul className="text-xs text-gray-600 space-y-1">
+        <Card className="p-4 bg-neutral-800 border-neutral-700">
+          <h4 className="text-xs font-semibold text-gray-200 mb-2">Quick Tips</h4>
+          <ul className="text-xs text-gray-400 space-y-1">
             <li>• Drag nodes to canvas</li>
             <li>• Connect output to input</li>
             <li>• Delete with Backspace</li>

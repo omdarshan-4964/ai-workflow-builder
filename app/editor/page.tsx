@@ -1,6 +1,7 @@
 'use client';
 
-import { useCallback, useState, useMemo } from 'react';
+import { useCallback, useState, useMemo, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { 
   ReactFlow,
   ReactFlowProvider,
@@ -35,9 +36,11 @@ const getNodeId = () => `node_${nodeId++}`;
 
 // EditorCanvas - Contains all the editor logic and state
 function EditorCanvas() {
+  const searchParams = useSearchParams();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [workflowName, setWorkflowName] = useState('Untitled Workflow');
+  const [isLoadingWorkflow, setIsLoadingWorkflow] = useState(false);
   
   // Get live node and edge data from React Flow
   const { getNodes, getEdges, fitView } = useReactFlow();
@@ -485,6 +488,38 @@ function EditorCanvas() {
     [setNodes, setEdges, handleNodeDataChange, runNode, fitView]
   );
 
+  // Load workflow from URL query params on mount
+  useEffect(() => {
+    const loadWorkflowId = searchParams.get('load');
+    if (!loadWorkflowId || isLoadingWorkflow) return;
+
+    setIsLoadingWorkflow(true);
+    const fetchAndLoadWorkflow = async () => {
+      try {
+        const response = await fetch(`/api/workflows/${loadWorkflowId}`);
+        const data = await response.json();
+
+        if (data.success && data.data) {
+          handleLoadWorkflow(data.data);
+        } else {
+          toast.error('Failed to Load Workflow', {
+            description: data.error || 'Workflow not found',
+          });
+        }
+      } catch (error: any) {
+        console.error('Error loading workflow:', error);
+        toast.error('Failed to Load Workflow', {
+          description: error.message || 'An error occurred',
+        });
+      } finally {
+        setIsLoadingWorkflow(false);
+      }
+    };
+
+    fetchAndLoadWorkflow();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
   return (
     <div className="flex h-screen w-full">
       {/* Sidebar */}
@@ -494,7 +529,7 @@ function EditorCanvas() {
       />
 
       {/* Main Canvas Area */}
-      <div className="flex-1 flex flex-col relative bg-weavy-background">
+      <div className="flex-1 flex flex-col relative bg-neutral-950">
         {/* Floating Header */}
         <Header
           workflowName={workflowName}
@@ -524,17 +559,17 @@ function EditorCanvas() {
               variant={BackgroundVariant.Dots}
               gap={20}
               size={1}
-              color="#E2E8F0"
-              className="bg-weavy-background"
+              color="#333"
             />
             <Controls
-              className="bg-white border border-gray-200 rounded-lg shadow-sm"
+              className="bg-neutral-900 border border-neutral-800 rounded-lg shadow-sm"
               showInteractive={false}
             />
             <MiniMap
-              className="bg-white border border-gray-200 rounded-lg shadow-sm"
-              nodeColor="#7C3AED"
-              maskColor="rgba(0, 0, 0, 0.1)"
+              className="border border-neutral-800 rounded-lg"
+              nodeColor="#555"
+              maskColor="rgba(0, 0, 0, 0.8)"
+              style={{ backgroundColor: '#171717' }}
               position="bottom-right"
             />
           </ReactFlow>
@@ -548,7 +583,9 @@ function EditorCanvas() {
 export default function EditorPage() {
   return (
     <ReactFlowProvider>
-      <EditorCanvas />
+      <Suspense fallback={<div className="flex h-screen items-center justify-center">Loading...</div>}>
+        <EditorCanvas />
+      </Suspense>
     </ReactFlowProvider>
   );
 }
