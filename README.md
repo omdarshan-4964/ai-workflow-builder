@@ -79,7 +79,7 @@ Ensure you have the following installed on your system:
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd weavy-clone
+   cd ai-workflow-builder
    ```
 
 2. **Install dependencies**
@@ -119,16 +119,17 @@ npm start
 ## 📸 Gallery
 
 ### Dashboard View
-![Dashboard View](/dashboard-screenshot.png)
+![Dashboard Screenshot](public/dashboard-screenshot.png)
 *Clean workspace interface with workflow library and saved files*
 
 ### Editor - Parallel Workflow
-![Editor Parallel Workflow](/editor-parallel-workflow.png)
+![Editor Parallel Workflow](public/editor-parallel-workflow.png)
 *Complex fan-out workflow showing one image input triggering multiple LLM nodes in parallel*
 
 ### Node Canvas
-![Node Canvas](/node-canvas.png)
-*Visual workflow builder with "Quick Access" sidebar and Multimodal Nodes*
+![Node Canvas](public/node-canvas.png)
+*Visual workflow builder with Text, Image, and LLM nodes*
+
 ---
 
 ## 📂 Project Structure
