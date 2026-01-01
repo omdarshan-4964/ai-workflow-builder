@@ -21,7 +21,7 @@ import '@xyflow/react/dist/style.css';
 import { toast } from 'sonner';
 
 import Sidebar from '@/components/workflow/Sidebar';
-import Header from '@/components/workflow/Header';
+import Header, { ExportWorkflowData } from '@/components/workflow/Header';
 import TextNode from '@/components/workflow/nodes/TextNode';
 import ImageNode from '@/components/workflow/nodes/ImageNode';
 import LLMNode from '@/components/workflow/nodes/LLMNode';
@@ -40,7 +40,7 @@ function EditorCanvas() {
   const [workflowName, setWorkflowName] = useState('Untitled Workflow');
   
   // Get live node and edge data from React Flow
-  const { getNodes, getEdges } = useReactFlow();
+  const { getNodes, getEdges, fitView } = useReactFlow();
 
   // Register custom node types
   const nodeTypes = useMemo(
@@ -393,6 +393,98 @@ function EditorCanvas() {
     [setNodes, setEdges, handleNodeDataChange, runNode]
   );
 
+  // Export workflow to JSON file
+  const handleExportWorkflow = useCallback(() => {
+    try {
+      const nodes = getNodes();
+      const edges = getEdges();
+
+      const exportData: ExportWorkflowData = {
+        name: workflowName || 'Untitled Workflow',
+        nodes,
+        edges,
+        version: '1.0',
+      };
+
+      // Create JSON string
+      const jsonString = JSON.stringify(exportData, null, 2);
+
+      // Create blob and download
+      const blob = new Blob([jsonString], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${exportData.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      toast.success('Workflow Exported!', {
+        description: `"${exportData.name}" has been saved to your computer`,
+      });
+
+      console.log('📤 Workflow exported:', exportData.name);
+    } catch (error: any) {
+      console.error('❌ Error exporting workflow:', error);
+      toast.error('Failed to Export Workflow', {
+        description: error.message || 'An error occurred while exporting',
+      });
+    }
+  }, [workflowName, getNodes, getEdges]);
+
+  // Import workflow from JSON file
+  const handleImportWorkflow = useCallback(
+    (data: ExportWorkflowData) => {
+      try {
+        // Validate imported data
+        if (!data.name || !Array.isArray(data.nodes) || !Array.isArray(data.edges)) {
+          throw new Error('Invalid workflow file format');
+        }
+
+        // Enhance workflow nodes with required callbacks
+        const enhancedNodes = data.nodes.map((node: any) => ({
+          ...node,
+          data: {
+            ...node.data,
+            onChange: handleNodeDataChange,
+            onRun: runNode,
+          },
+        }));
+
+        // Reset canvas with imported workflow data
+        setNodes(enhancedNodes);
+        setEdges(data.edges as Edge[]);
+        setWorkflowName(data.name);
+
+        // Update nodeId counter to avoid conflicts
+        const maxId = data.nodes.reduce((max: number, node: any) => {
+          const idNum = parseInt(node.id?.replace('node_', '') || '0', 10);
+          return isNaN(idNum) ? max : idNum > max ? idNum : max;
+        }, nodeId);
+        nodeId = maxId + 1;
+
+        // Fit view to show all nodes after DOM updates
+        setTimeout(() => {
+          fitView({ padding: 0.2, duration: 800 });
+        }, 100);
+
+        // Show success notification
+        toast.success('Workflow Imported Successfully!', {
+          description: `"${data.name}" is ready to edit`,
+        });
+
+        console.log('📥 Workflow imported:', data.name);
+      } catch (error: any) {
+        console.error('❌ Error importing workflow:', error);
+        toast.error('Failed to Import Workflow', {
+          description: error.message || 'Invalid workflow file format',
+        });
+      }
+    },
+    [setNodes, setEdges, handleNodeDataChange, runNode, fitView]
+  );
+
   return (
     <div className="flex h-screen w-full">
       {/* Sidebar */}
@@ -408,6 +500,8 @@ function EditorCanvas() {
           workflowName={workflowName}
           onWorkflowNameChange={setWorkflowName}
           onSave={handleSave}
+          onExport={handleExportWorkflow}
+          onImport={handleImportWorkflow}
         />
 
         {/* React Flow Canvas */}
