@@ -21,11 +21,10 @@ import '@xyflow/react/dist/style.css';
 import { toast } from 'sonner';
 
 import Sidebar from '@/components/workflow/Sidebar';
+import Header from '@/components/workflow/Header';
 import TextNode from '@/components/workflow/nodes/TextNode';
 import ImageNode from '@/components/workflow/nodes/ImageNode';
 import LLMNode from '@/components/workflow/nodes/LLMNode';
-import { Button } from '@/components/ui/button';
-import { Rocket } from 'lucide-react';
 import { WorkflowTemplate } from '@/lib/templates';
 
 const initialNodes: Node[] = [];
@@ -321,34 +320,95 @@ function EditorCanvas() {
     [setNodes, setEdges, handleNodeDataChange, runNode]
   );
 
+  // Save workflow to database
+  const handleSave = useCallback(async () => {
+    try {
+      const nodes = getNodes();
+      const edges = getEdges();
+
+      const response = await fetch('/api/workflows', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: workflowName || 'Untitled Workflow',
+          nodes,
+          edges,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to save workflow');
+      }
+
+      toast.success('Workflow Saved!', {
+        description: `"${data.data.name}" has been saved successfully`,
+      });
+
+      console.log('💾 Workflow saved:', data.data._id);
+    } catch (error: any) {
+      console.error('❌ Error saving workflow:', error);
+      toast.error('Failed to Save Workflow', {
+        description: error.message || 'An error occurred while saving',
+      });
+      throw error; // Re-throw to let Header component handle loading state
+    }
+  }, [workflowName, getNodes, getEdges]);
+
+  // Load a saved workflow from database
+  const handleLoadWorkflow = useCallback(
+    (workflow: { _id: string; name: string; nodes: Node[]; edges: Edge[] }) => {
+      // Enhance workflow nodes with required callbacks
+      const enhancedNodes = workflow.nodes.map((node) => ({
+        ...node,
+        data: {
+          ...node.data,
+          onChange: handleNodeDataChange,
+          onRun: runNode,
+        },
+      }));
+
+      // Reset canvas with workflow data
+      setNodes(enhancedNodes);
+      setEdges(workflow.edges);
+      setWorkflowName(workflow.name);
+
+      // Update nodeId counter to avoid conflicts
+      const maxId = workflow.nodes.reduce((max, node) => {
+        const idNum = parseInt(node.id.replace('node_', ''), 10);
+        return isNaN(idNum) ? max : idNum > max ? idNum : max;
+      }, nodeId);
+      nodeId = maxId + 1;
+
+      // Show success notification
+      toast.success('Workflow Loaded!', {
+        description: `"${workflow.name}" is ready to edit`,
+      });
+
+      console.log('📂 Loaded workflow:', workflow._id);
+    },
+    [setNodes, setEdges, handleNodeDataChange, runNode]
+  );
+
   return (
     <div className="flex h-screen w-full">
       {/* Sidebar */}
-      <Sidebar onLoadTemplate={loadTemplate} />
+      <Sidebar
+        onLoadTemplate={loadTemplate}
+        onLoadWorkflow={handleLoadWorkflow}
+      />
 
       {/* Main Canvas Area */}
       <div className="flex-1 flex flex-col relative bg-weavy-background">
         {/* Floating Header */}
-        <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-6 py-4 bg-white/80 backdrop-blur-sm border-b border-gray-200">
-          <div className="flex items-center gap-4">
-            <input
-              type="text"
-              value={workflowName}
-              onChange={(e) => setWorkflowName(e.target.value)}
-              className="text-xl font-semibold bg-transparent border-none outline-none focus:ring-0 text-foreground"
-              placeholder="Untitled Workflow"
-            />
-          </div>
-          <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm">
-              Save
-            </Button>
-            <Button size="sm" className="bg-weavy-primary hover:bg-weavy-purple-dark">
-              <Rocket size={16} className="mr-2" />
-              Deploy
-            </Button>
-          </div>
-        </div>
+        <Header
+          workflowName={workflowName}
+          onWorkflowNameChange={setWorkflowName}
+          onSave={handleSave}
+        />
 
         {/* React Flow Canvas */}
         <div

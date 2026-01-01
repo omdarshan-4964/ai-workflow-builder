@@ -1,10 +1,20 @@
 'use client';
 
-import { Type, Image, Sparkles, Package } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Type, Image, Sparkles, Package, FolderOpen, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { WorkflowTemplate } from '@/lib/templates';
+
+interface SavedWorkflow {
+  _id: string;
+  name: string;
+  nodes: any[];
+  edges: any[];
+  createdAt: string;
+  updatedAt?: string;
+}
 
 interface NodeButtonProps {
   icon: React.ReactNode;
@@ -14,6 +24,7 @@ interface NodeButtonProps {
 
 interface SidebarProps {
   onLoadTemplate?: (template: WorkflowTemplate) => void;
+  onLoadWorkflow?: (workflow: SavedWorkflow) => void;
 }
 
 const NodeButton = ({ icon, label, nodeType }: NodeButtonProps) => {
@@ -37,7 +48,36 @@ const NodeButton = ({ icon, label, nodeType }: NodeButtonProps) => {
   );
 };
 
-export default function Sidebar({ onLoadTemplate }: SidebarProps) {
+export default function Sidebar({ onLoadTemplate, onLoadWorkflow }: SidebarProps) {
+  const [savedWorkflows, setSavedWorkflows] = useState<SavedWorkflow[]>([]);
+  const [isLoadingWorkflows, setIsLoadingWorkflows] = useState(true);
+
+  // Fetch saved workflows on mount
+  useEffect(() => {
+    const fetchWorkflows = async () => {
+      if (!onLoadWorkflow) return;
+
+      setIsLoadingWorkflows(true);
+      try {
+        const response = await fetch('/api/workflows');
+        const data = await response.json();
+
+        if (data.success) {
+          setSavedWorkflows(data.data || []);
+          console.log(`✅ Loaded ${data.data?.length || 0} saved workflows`);
+        } else {
+          console.error('Failed to fetch workflows:', data.error);
+        }
+      } catch (error) {
+        console.error('Error fetching workflows:', error);
+      } finally {
+        setIsLoadingWorkflows(false);
+      }
+    };
+
+    fetchWorkflows();
+  }, [onLoadWorkflow]);
+
   return (
     <aside className="w-[280px] h-screen bg-white border-r border-gray-200 flex flex-col">
       {/* Sidebar Header */}
@@ -73,6 +113,51 @@ export default function Sidebar({ onLoadTemplate }: SidebarProps) {
                   </div>
                   <span className="text-sm">📦 Product Generator</span>
                 </Button>
+              </div>
+            </div>
+
+            <Separator className="bg-gray-200" />
+          </>
+        )}
+
+        {/* Saved Workflows Section */}
+        {onLoadWorkflow && (
+          <>
+            <div className="space-y-3">
+              <div className="px-2">
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Saved Workflows
+                </h3>
+              </div>
+              <div className="space-y-2">
+                {isLoadingWorkflows ? (
+                  <div className="flex items-center justify-center py-4">
+                    <Loader2 size={18} className="animate-spin text-gray-400" />
+                  </div>
+                ) : savedWorkflows.length === 0 ? (
+                  <div className="text-xs text-gray-400 text-center py-4">
+                    No saved workflows yet
+                  </div>
+                ) : (
+                  savedWorkflows.map((workflow) => (
+                    <Button
+                      key={workflow._id}
+                      variant="outline"
+                      className="w-full justify-start gap-3 h-auto py-3 bg-white hover:bg-weavy-background border-weavy-border text-foreground font-normal"
+                      onClick={() => onLoadWorkflow(workflow)}
+                    >
+                      <div className="flex items-center justify-center w-5 h-5 text-weavy-primary flex-shrink-0">
+                        <FolderOpen size={16} />
+                      </div>
+                      <div className="flex-1 text-left min-w-0">
+                        <div className="text-sm font-medium truncate">{workflow.name}</div>
+                        <div className="text-xs text-gray-500 mt-0.5">
+                          {workflow.nodes.length} nodes
+                        </div>
+                      </div>
+                    </Button>
+                  ))
+                )}
               </div>
             </div>
 

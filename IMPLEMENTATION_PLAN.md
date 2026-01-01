@@ -241,39 +241,49 @@ Build a pixel-perfect UI/UX clone of Weavy.ai workflow builder with React Flow c
 
 ---
 
-## 💾 Phase 7: Workflow Persistence (Database)
+## 💾 Phase 7: Workflow Persistence (Database) ✅
 
-### 7.1 Database Schema
-- [ ] Create Workflow model (Mongoose schema)
-- [ ] Add fields: userId, name, nodes, edges, createdAt, updatedAt
-- [ ] Create indexes for efficient queries
-- [ ] Add validation rules
+### 7.1 Database Connection & Schema
+- [x] Create `lib/db.ts` with cached MongoDB connection
+- [x] Implement connection pooling for Next.js dev mode
+- [x] Add environment variable validation
+- [x] Create Workflow model (`models/Workflow.ts`)
+- [x] Add fields: name, nodes, edges, createdAt, updatedAt
+- [x] Create indexes for efficient queries (createdAt, name)
+- [x] Add validation rules (required fields, max length)
+- [x] Handle "model already compiled" error for Next.js
 
-### 7.2 Save Functionality
-- [ ] Create `/api/workflows` POST endpoint
-- [ ] Implement save workflow logic
-- [ ] Serialize React Flow state (nodes + edges)
-- [ ] Associate workflow with authenticated user
-- [ ] Add success/error toast notifications
+### 7.2 API Routes - Basic CRUD
+- [x] Create `/api/workflows` GET endpoint
+- [x] Implement fetch all workflows (sorted by newest)
+- [x] Add lean() for performance optimization
+- [x] Create `/api/workflows` POST endpoint
+- [x] Implement save workflow logic
+- [x] Serialize React Flow state (nodes + edges)
+- [x] Add comprehensive error handling (validation, connection)
+- [x] Return standardized response format
 
-### 7.3 Load Functionality
-- [ ] Create `/api/workflows` GET endpoint
-- [ ] Fetch user's workflows from database
-- [ ] Create `/api/workflows/[id]` GET endpoint
-- [ ] Deserialize and restore React Flow state
-- [ ] Handle missing workflows gracefully
+### 7.3 Frontend Integration ✅
+- [x] Create `components/workflow/Header.tsx` component
+- [x] Add "Save" button handler in editor (`handleSave`)
+- [x] Implement save workflow function with API call (POST /api/workflows)
+- [x] Create "Load" workflow section in Sidebar
+- [x] Fetch workflows on component mount (useEffect)
+- [x] Display saved workflows list in Sidebar
+- [x] Deserialize and restore React Flow state (`handleLoadWorkflow`)
+- [x] Add success/error toast notifications
+- [x] Handle loading states (save button, workflows list)
+- [x] Enhance loaded nodes with callbacks (onChange, onRun)
+- [x] Update nodeId counter to avoid conflicts
 
-### 7.4 Update Functionality
-- [ ] Create `/api/workflows/[id]` PUT endpoint
-- [ ] Implement update workflow logic
-- [ ] Add optimistic updates in UI
-- [ ] Handle concurrent edit conflicts
-
-### 7.5 Delete Functionality
+### 7.4 Advanced Features (TODO)
+- [ ] Create `/api/workflows/[id]` GET endpoint (single workflow)
+- [ ] Create `/api/workflows/[id]` PUT endpoint (update)
 - [ ] Create `/api/workflows/[id]` DELETE endpoint
 - [ ] Add confirmation dialog before delete
-- [ ] Remove workflow from database
-- [ ] Update UI after deletion
+- [ ] Implement optimistic updates in UI
+- [ ] Handle concurrent edit conflicts
+- [ ] Add auto-save functionality (debounced)
 
 ---
 
