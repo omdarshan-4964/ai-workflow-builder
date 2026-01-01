@@ -562,7 +562,7 @@ function EditorCanvas() {
               color="#333"
             />
             <Controls
-              className="bg-neutral-900 border border-neutral-800 rounded-lg shadow-sm"
+              className="bg-neutral-800 border-neutral-700 shadow-lg [&>button]:bg-neutral-800 [&>button]:border-neutral-700 [&>button]:text-gray-200 hover:[&>button]:bg-neutral-700 [&>button>svg]:stroke-gray-200"
               showInteractive={false}
             />
             <MiniMap
