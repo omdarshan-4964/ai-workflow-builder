@@ -26,6 +26,7 @@ import ImageNode from '@/components/workflow/nodes/ImageNode';
 import LLMNode from '@/components/workflow/nodes/LLMNode';
 import { Button } from '@/components/ui/button';
 import { Rocket } from 'lucide-react';
+import { WorkflowTemplate } from '@/lib/templates';
 
 const initialNodes: Node[] = [];
 const initialEdges: Edge[] = [];
@@ -285,10 +286,45 @@ function EditorCanvas() {
     [setNodes, handleNodeDataChange, runNode]
   );
 
+  // Load a pre-built workflow template
+  const loadTemplate = useCallback(
+    (template: WorkflowTemplate) => {
+      // Enhance template nodes with required callbacks
+      const enhancedNodes = template.nodes.map((node) => ({
+        ...node,
+        data: {
+          ...node.data,
+          onChange: handleNodeDataChange,
+          onRun: runNode,
+        },
+      }));
+
+      // Reset canvas with template data
+      setNodes(enhancedNodes);
+      setEdges(template.edges);
+      setWorkflowName(template.name);
+
+      // Update nodeId counter to avoid conflicts
+      const maxId = template.nodes.reduce((max, node) => {
+        const idNum = parseInt(node.id.replace('node_', ''), 10);
+        return idNum > max ? idNum : max;
+      }, 0);
+      nodeId = maxId + 1;
+
+      // Show success notification
+      toast.success('Template Loaded!', {
+        description: `${template.name} is ready to use`,
+      });
+
+      console.log('📦 Loaded template:', template.name);
+    },
+    [setNodes, setEdges, handleNodeDataChange, runNode]
+  );
+
   return (
     <div className="flex h-screen w-full">
       {/* Sidebar */}
-      <Sidebar />
+      <Sidebar onLoadTemplate={loadTemplate} />
 
       {/* Main Canvas Area */}
       <div className="flex-1 flex flex-col relative bg-weavy-background">

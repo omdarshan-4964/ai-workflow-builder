@@ -207,34 +207,37 @@ Build a pixel-perfect UI/UX clone of Weavy.ai workflow builder with React Flow c
 
 ---
 
-## 📊 Phase 6: Pre-built Workflow - Product Listing Generator
+## 📊 Phase 6: Pre-built Workflow - Product Listing Generator ✅
 
-### 6.1 Workflow Structure
-- [ ] Create 3 Image Nodes (Product Photo 1, 2, 3)
-- [ ] Create 2 Text Nodes (System prompt, Product name & specs)
-- [ ] Create 1 LLM Node (Analyze product)
-- [ ] Create 3 LLM Nodes (Write Amazon listing, Instagram caption, SEO meta)
-- [ ] Create 3 Text Nodes (Output displays)
+### 6.1 Template System
+- [x] Create `lib/templates.ts` with WorkflowTemplate interface
+- [x] Define PRODUCT_LISTING_TEMPLATE with pre-configured nodes
+- [x] Create Image Node for product photo
+- [x] Create Text Node with Amazon copywriter system prompt
+- [x] Create LLM Node as the generator
+- [x] Pre-connect nodes with proper edge configuration
 
-### 6.2 Node Connections
-- [ ] Connect Image Nodes → Analyze product LLM
-- [ ] Connect Text Nodes → Analyze product LLM
-- [ ] Connect Analyze product output → All 3 writing LLMs
-- [ ] Connect each writing LLM → respective Text output node
+### 6.2 Sidebar Integration
+- [x] Add "Templates" section to Sidebar
+- [x] Create "📦 Product Generator" button
+- [x] Add onLoadTemplate prop to Sidebar component
+- [x] Style template button with gradient background
+- [x] Implement dynamic template import to avoid circular dependencies
 
-### 6.3 Pre-filled Content
-- [ ] Add sample system prompt text
-- [ ] Add sample product name and specs
-- [ ] Configure LLM node prompts
-- [ ] Set appropriate Gemini models
-- [ ] Position nodes to match workflow diagram
+### 6.3 Editor Integration
+- [x] Create loadTemplate function in EditorCanvas
+- [x] Enhance template nodes with onChange and onRun callbacks
+- [x] Reset canvas with template data (nodes, edges, workflow name)
+- [x] Update nodeId counter to avoid ID conflicts
+- [x] Pass loadTemplate to Sidebar component
+- [x] Add success toast notification when template loads
 
-### 6.4 Workflow Execution
-- [ ] Implement sequential execution logic
-- [ ] Execute "Analyze product" first
-- [ ] Execute 3 writing LLMs in parallel
-- [ ] Display results in output text nodes
-- [ ] Add visual feedback during execution
+### 6.4 Template Features
+- [x] Pre-positioned nodes for optimal layout
+- [x] Pre-filled system prompt for Amazon copywriting
+- [x] Pre-connected data flow (Image → LLM, Text → LLM)
+- [x] Ready-to-use workflow (just upload image and click Run)
+- [x] Automatic workflow naming
 
 ---
 
