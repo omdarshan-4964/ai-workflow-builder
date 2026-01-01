@@ -123,7 +123,7 @@ npm start
 *Clean workspace interface with workflow library and saved files*
 
 ### Editor - Parallel Workflow
-![Editor Parallel Workflow](public/editor-parallel-workflow.png)
+![Editor Parallel Workflow](public/editor-parallel.png)
 *Complex fan-out workflow showing one image input triggering multiple LLM nodes in parallel*
 
 ### Node Canvas
