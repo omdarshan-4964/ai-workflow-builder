@@ -1,36 +1,227 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Workflow Builder (Weavy.ai Clone)
 
-## Getting Started
+**A pixel-perfect, visual workflow automation tool powered by Google Gemini and React Flow.**
 
-First, run the development server:
+[![Next.js](https://img.shields.io/badge/Next.js-16.1.1-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38bdf8?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-9.1.1-47a248?style=for-the-badge&logo=mongodb)](https://www.mongodb.com/)
+[![Gemini](https://img.shields.io/badge/Google_Gemini-1.5_Flash-4285f4?style=for-the-badge&logo=google)](https://ai.google.dev/)
+
+---
+
+## ✨ Key Features
+
+### 🎨 Pixel-Perfect Dark UI
+Exact clone of Weavy's sophisticated dark aesthetic with precise typography, spacing, and color matching. Built with the **Inter** font family, `#0f0f0f` dark backgrounds, and meticulously crafted component styling that mirrors the original interface pixel-for-pixel.
+
+### ⚡ Parallel AI Execution
+Revolutionary **Fan-Out** workflow architecture supporting simultaneous parallel AI processing. Execute complex workflows where a single input (e.g., one product image) triggers multiple LLM nodes in parallel—generating Amazon listings, Instagram captions, and SEO meta descriptions simultaneously for maximum efficiency.
+
+### 🔄 Robust History Management
+Enterprise-grade undo/redo system with full state management:
+- **Keyboard Shortcuts:** `Ctrl+Z` (Undo) and `Ctrl+Y` / `Ctrl+Shift+Z` (Redo)
+- **Visual Controls:** Floating undo/redo buttons in the canvas
+- **State Preservation:** Complete workflow state snapshots with intelligent change detection
+- **Delete Support:** Native `Backspace` and `Delete` key handling for node removal
+
+### 💾 Full Persistence & Portability
+Comprehensive data management capabilities:
+- **Auto-Save to MongoDB:** Automatic workflow persistence with Mongoose ODM
+- **JSON Import/Export:** Import workflows from `.json` files or export to share across environments
+- **Template System:** Pre-built workflow templates for common use cases (Product Listing, Image Analysis, etc.)
+- **Workflow Library:** Organized dashboard with saved workflows and quick access templates
+
+### 🧠 Multimodal AI Integration
+Advanced AI capabilities powered by **Google Gemini 1.5 Flash**:
+- **Text Processing:** System prompts, user messages, and dynamic content generation
+- **Image Analysis:** Upload and analyze images with vision capabilities
+- **Multimodal Prompts:** Combine text and image inputs in a single AI request
+- **Real-Time Execution:** Live status updates and streaming response handling
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **Next.js 16.1.1** (App Router) - React framework with server-side rendering
+- **React 19.2.3** - Latest React with concurrent features
+- **React Flow (@xyflow/react 12.10.0)** - Advanced node-based graph visualization
+- **Tailwind CSS 4.0** - Utility-first CSS framework for rapid UI development
+- **Lucide React 0.562.0** - Modern icon library
+- **Sonner 2.0.7** - Elegant toast notifications
+- **Zustand 5.0.9** - Lightweight state management
+
+### Backend
+- **Next.js API Routes** - Serverless API endpoints
+- **Mongoose 9.1.1** - MongoDB object modeling and validation
+- **Zod 4.3.4** - TypeScript-first schema validation
+- **Node.js** - Runtime environment
+
+### AI & ML
+- **Google Generative AI SDK 0.24.1** - Official Gemini API integration
+- **Gemini 1.5 Flash** - Multimodal AI model for text and vision
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+Ensure you have the following installed on your system:
+
+- **Node.js** 18.x or higher ([Download](https://nodejs.org/))
+- **MongoDB** database (Local instance or MongoDB Atlas connection string)
+- **Google Gemini API Key** ([Get API Key](https://ai.google.dev/))
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd weavy-clone
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Configure environment variables**
+   
+   Create a `.env.local` file in the root directory:
+   ```env
+   MONGODB_URI=mongodb://localhost:27017/weavy-clone
+   # OR for MongoDB Atlas:
+   # MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/weavy-clone
+   
+   GEMINI_API_KEY=your_gemini_api_key_here
+   ```
+
+4. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+5. **Open your browser**
+   
+   Navigate to [http://localhost:3000](http://localhost:3000) to view the application.
+
+### Build for Production
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run build
+npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📸 Gallery
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Dashboard View
+![Dashboard View](/dashboard-screenshot.png)
+*Clean workspace interface with workflow library and saved files*
 
-## Learn More
+### Editor - Parallel Workflow
+![Editor Parallel Workflow](/editor-parallel-workflow.png)
+*Complex fan-out workflow showing one image input triggering multiple LLM nodes in parallel*
 
-To learn more about Next.js, take a look at the following resources:
+### Node Canvas
+![Node Canvas](/node-canvas.png)
+*Visual workflow builder with "Quick Access" sidebar and Multimodal Nodes*
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📂 Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+ai-workflow-builder/
+├── app/                          # Next.js App Router
+│   ├── api/                      # API Routes
+│   │   ├── llm/                  # Gemini AI integration endpoint
+│   │   └── workflows/            # Workflow CRUD operations
+│   ├── editor/                   # Visual workflow editor page
+│   │   └── page.tsx              # Main editor canvas component
+│   ├── page.tsx                  # Dashboard/home page
+│   ├── layout.tsx                # Root layout with Inter font
+│   └── globals.css               # Global styles and Tailwind
+│
+├── components/
+│   ├── ui/                       # Reusable UI components (shadcn/ui style)
+│   │   ├── button.tsx
+│   │   ├── card.tsx
+│   │   ├── select.tsx
+│   │   ├── separator.tsx
+│   │   └── textarea.tsx
+│   └── workflow/                 # Workflow-specific components
+│       ├── Header.tsx            # Editor header with save/export/import
+│       ├── Sidebar.tsx           # Node palette and workflow templates
+│       ├── WorkflowLayout.tsx    # Layout wrapper
+│       └── nodes/                # Custom React Flow node components
+│           ├── BaseNode.tsx      # Base node wrapper
+│           ├── TextNode.tsx      # Text input node
+│           ├── ImageNode.tsx     # Image upload/display node
+│           └── LLMNode.tsx       # AI execution node
+│
+├── lib/
+│   ├── db.ts                     # MongoDB connection and setup
+│   ├── templates.ts              # Pre-built workflow templates
+│   └── utils.ts                  # Utility functions
+│
+├── models/
+│   └── Workflow.ts               # Mongoose schema for workflows
+│
+└── types/                        # TypeScript type definitions
+```
 
-## Deploy on Vercel
+### Key Architecture Decisions
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **App Router Architecture:** Leverages Next.js 16 App Router for optimal performance and React Server Components support
+- **Custom Node System:** Extensible node type system built on React Flow's plugin architecture
+- **State Management:** React Flow's built-in state hooks (`useNodesState`, `useEdgesState`) combined with Zustand for global state
+- **Graph Execution Engine:** Custom-built execution engine that traverses node dependencies and executes LLM calls with proper payload construction
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🎯 Use Cases
+
+- **E-Commerce Content Generation:** Create product listings, social media captions, and SEO content from product images
+- **Content Marketing:** Generate blog posts, social media content, and marketing copy
+- **Image Analysis Workflows:** Analyze images and generate descriptive text, summaries, or metadata
+- **Multi-Channel Content Distribution:** Generate platform-specific content variants from a single source
+- **AI-Powered Automation:** Build custom workflows that combine text processing and image analysis
+
+---
+
+## 🧪 Development
+
+### Available Scripts
+
+- `npm run dev` - Start development server with hot reload
+- `npm run build` - Build production bundle
+- `npm start` - Start production server
+- `npm run lint` - Run ESLint code analysis
+
+### Code Style
+
+- **TypeScript:** Strict mode enabled with comprehensive type coverage
+- **ESLint:** Next.js recommended configuration
+- **Component Architecture:** Modular, reusable components with clear separation of concerns
+
+---
+
+## 📝 License
+
+This project is part of a **Full Stack AI Engineer** assignment submission. All rights reserved.
+
+---
+
+## 🙏 Acknowledgments
+
+- **Weavy.ai** - Original design inspiration
+- **React Flow** - Powerful graph visualization library
+- **Google Gemini** - Advanced multimodal AI capabilities
+- **Next.js Team** - Excellent React framework and developer experience
+
+---
+
+**Built with ❤️ using Next.js, React Flow, and Google Gemini**
