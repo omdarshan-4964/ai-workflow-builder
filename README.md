@@ -91,9 +91,9 @@ Ensure you have the following installed on your system:
    
    Create a `.env.local` file in the root directory:
    ```env
-   MONGODB_URI=mongodb://localhost:27017/weavy-clone
+   MONGODB_URI=mongodb://localhost:27017/ai-workflow-builder
    # OR for MongoDB Atlas:
-   # MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/weavy-clone
+   # MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/ai-workflow-builder
    
    GEMINI_API_KEY=your_gemini_api_key_here
    ```

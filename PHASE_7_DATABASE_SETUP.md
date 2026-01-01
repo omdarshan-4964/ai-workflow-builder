@@ -187,7 +187,7 @@ catch (error: any) {
 ### 1. Setup MongoDB
 ```bash
 # Add to .env.local
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/weavy-clone?retryWrites=true&w=majority
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/ai-workflow-builder?retryWrites=true&w=majority
 ```
 
 ### 2. Test GET Endpoint

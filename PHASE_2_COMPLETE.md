@@ -74,7 +74,7 @@ Features implemented:
 ## File Structure
 
 ```
-weavy-clone/
+ai-workflow-builder/
 ├── app/
 │   └── editor/
 │       └── page.tsx          ✅ Main editor page
