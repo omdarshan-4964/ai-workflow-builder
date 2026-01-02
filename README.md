@@ -212,7 +212,7 @@ ai-workflow-builder/
 
 ## 📝 License
 
-This project is part of a **Full Stack AI Engineer** assignment submission. All rights reserved.
+This project is part of a **Full Stack Developer** assignment submission. All rights reserved.
 
 ---
 
