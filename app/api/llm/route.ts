@@ -1,15 +1,23 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 
 // Initialize Gemini client (matching working Cerebra implementation)
 const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GEMINI_API_KEY || '';
 const genAI = new GoogleGenerativeAI(apiKey);
 
+// Zod schema for LLM request validation
+const RunWorkflowSchema = z.object({
+  system: z.string().optional(),
+  user: z.string().min(1, 'User message is required'),
+  images: z.array(z.string()).optional(),
+  model: z.string().optional().default('gemini-2.5-flash'),
+}).passthrough();
+
 export async function POST(request: NextRequest) {
   try {
-    // Parse request body and support model mapping
+    // Parse request body
     const body = await request.json();
-    const { system, user, images, model = 'gemini-2.5-flash' } = body;
 
     // Validate API key
     if (!apiKey) {
@@ -19,13 +27,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate required inputs
-    if (!user) {
+    // Validate with Zod schema
+    const result = RunWorkflowSchema.safeParse(body);
+
+    if (!result.success) {
       return NextResponse.json(
-        { error: 'User message is required' },
+        {
+          error: 'Validation failed',
+          details: result.error.format(),
+        },
         { status: 400 }
       );
     }
+
+    const { system, user, images, model = 'gemini-2.5-flash' } = result.data;
 
     // Map model names to correct API identifiers for backward compatibility
     const modelMap: Record<string, string> = {
