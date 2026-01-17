@@ -1,6 +1,6 @@
-# AI Workflow Builder (Weavy.ai Clone)
+# AI Workflow Builder - Agentic Orchestration Engine
 
-**A pixel-perfect, visual workflow automation tool powered by Google Gemini and React Flow.**
+**A scalable, node-based AI orchestration platform powered by Google Gemini 1.5 and React Flow.**
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.1.1-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
@@ -212,7 +212,7 @@ ai-workflow-builder/
 
 ## 📝 License
 
-This project is part of a **Full Stack Developer** assignment submission. All rights reserved.
+OpenSource. All rights reserved.
 
 ---
 
