@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# interview prep files
+INTERVIEW_PREP_PROMPT_TEMPLATE.md
+TECHNICAL_INTERVIEW_PREP.md
+TECHNICAL_INTERVIEW_PREP.tex
